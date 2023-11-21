@@ -23,7 +23,6 @@ void yyerror(const char *s);
 %left EQUAL GREATER LESS
 %left PLUS MINUS DOT
 %left TIMES DIVIDE
-%left UMINUS
 
 %%
 program: /* empty */
