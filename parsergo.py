@@ -54,7 +54,7 @@ class Parser:
             if Parser.tokenizer.next.type == "CLOSEPAR":
                 Parser.tokenizer.selectNext()
                 return resultado
-            raise Exception("Nao fechou parenteses")
+            raise Exception("Nao fechou parenteses 1")
         elif Parser.tokenizer.next.type == "SCAN":
             Parser.tokenizer.selectNext()
             if Parser.tokenizer.next.type == "OPENPAR":
@@ -133,6 +133,7 @@ class Parser:
         if Parser.tokenizer.next.type == "ENTER":
             Parser.tokenizer.selectNext()
             return resultado
+        
 
         elif Parser.tokenizer.next.type == "IDENTIFIER":
             valor_ident = Parser.tokenizer.next.value
@@ -177,21 +178,23 @@ class Parser:
                 if Parser.tokenizer.next.type == "CLOSEPAR":
                     Parser.tokenizer.selectNext()
                     return resultado
-                raise Exception("Nao fechou parenteses")
+                raise Exception("Nao fechou parenteses 2")
             raise Exception("Nao abriu parenteses")
 
         elif Parser.tokenizer.next.type == "IF":
             Parser.tokenizer.selectNext()
             condition = Parser.parseBoolExpression()
             if Parser.tokenizer.next.type == "DDOT":
+                Parser.tokenizer.selectNext()
                 block = Parser.parseBlock()
+                Parser.tokenizer.selectNext()
                 resultado = If("IF", [condition, block])
                 if Parser.tokenizer.next.type == "ELSE":
                     Parser.tokenizer.selectNext()
                     if Parser.tokenizer.next.type == "DDOT":
+                        Parser.tokenizer.selectNext()
                         newBlock = Parser.parseBlock()
                         resultado.children.append(newBlock)
-                    raise Exception("faltou dois pontos depois da condicao do else")
                 if Parser.tokenizer.next.type == "ENTER":
                     Parser.tokenizer.selectNext()
                     return resultado
@@ -217,6 +220,7 @@ class Parser:
                                 if Parser.tokenizer.next.type == "EQUAL":
                                     Parser.tokenizer.selectNext()
                                     increment = Assignment("EQUAL", [Identifier(increment_ident_for, None), Parser.parseBoolExpression()])
+                                    Parser.tokenizer.selectNext()
                                     block_for = Parser.parseBlock()
                                     resultado = For("FOR", [init, condition_for, increment, block_for])
                                     if Parser.tokenizer.next.type == "ENTER":
@@ -232,9 +236,9 @@ class Parser:
 
         elif Parser.tokenizer.next.type == "INTTYPE" or Parser.tokenizer.next.type == "STRINGTYPE":
             valor_type_var = Parser.tokenizer.next.value
+            Parser.tokenizer.selectNext()
             if Parser.tokenizer.next.type == "IDENTIFIER":
                 valor_ident_var = Parser.tokenizer.next.value
-                Parser.tokenizer.selectNext()
                 Parser.tokenizer.selectNext()
                 if Parser.tokenizer.next.type == "EQUAL":
                     Parser.tokenizer.selectNext()
@@ -272,12 +276,9 @@ class Parser:
 
     def parseDeclaration():
         resultado = NoOp(None, [])
-        #if Parser.tokenizer.next.type == "ENTER":
-        #    Parser.tokenizer.selectNext()
-        #    return resultado
         if Parser.tokenizer.next.type == "FUNCTION":
             Parser.tokenizer.selectNext()
-            if Parser.tokenizer.next.type == "INTTYPE" or Parser.tokenizer.next.type == "STRINGTYPE":
+            if Parser.tokenizer.next.type == "INTTYPE" or Parser.tokenizer.next.type == "STRINGTYPE" or Parser.tokenizer.next.type == "VOIDTYPE":
                 function_type = Parser.tokenizer.next.value
                 Parser.tokenizer.selectNext()
                 if Parser.tokenizer.next.type == "IDENTIFIER":
@@ -287,58 +288,61 @@ class Parser:
                         Parser.tokenizer.selectNext()
                         if Parser.tokenizer.next.type == "CLOSEPAR":
                             Parser.tokenizer.selectNext()
-                            block = Parser.parseBlock()
-                            funcDec = VarDec("FUNCTION_VARIABLE", [function_iden, function_type, None])
-                            resultado = FuncDec("FUNCTION", [funcDec, block])
-                            if Parser.tokenizer.next.type == "ENTER":
+                            if Parser.tokenizer.next.type == "DDOT":
                                 Parser.tokenizer.selectNext()
-                                return resultado
-                            raise Exception("Faltou Enter Funcao")
-                        raise Exception("Faltou tipo da Funcao")
-                    elif Parser.tokenizer.next.type == "INTTYPE" or Parser.tokenizer.next.type == "STRINGTYPE":
-                        var_type = Parser.tokenizer.next.value
-                        Parser.tokenizer.selectNext()
-                        if Parser.tokenizer.next.type == "IDENTIFIER":
-                            var_iden = Parser.tokenizer.next.value
-                            var_dec = VarDec("VARIABLE", [var_iden, var_type, None])
-                            var_dec_list = [var_dec]
+                                block = Parser.parseBlock()
+                                funcDec = VarDec("FUNCTION_VARIABLE", [function_iden, function_type, None])
+                                resultado = FuncDec("FUNCTION", [funcDec, block])
+                                if Parser.tokenizer.next.type == "ENTER":
+                                    Parser.tokenizer.selectNext()
+                                    return resultado
+                                raise Exception("Faltou Enter Funcao")
+                            raise Exception("Faltou DDOT")
+                        elif Parser.tokenizer.next.type == "INTTYPE" or Parser.tokenizer.next.type == "STRINGTYPE":
+                            var_type = Parser.tokenizer.next.value
                             Parser.tokenizer.selectNext()
-                            if Parser.tokenizer.next.type == "COMA":
-                                while Parser.tokenizer.next.type == "COMA":
-                                    Parser.tokenizer.selectNext()
-                                    if Parser.tokenizer.next.type == "INTTYPE" or Parser.tokenizer.next.type == "STRINGTYPE":
-                                        var_type = Parser.tokenizer.next.value
-                                        Parser.tokenizer.selectNext()
-                                        if Parser.tokenizer.next.type == "IDENTIFIER":
-                                            var_iden = Parser.tokenizer.next.value
-                                            var_dec = VarDec("VARIABLE", [var_iden, var_type, None])
-                                            var_dec_list.append(var_dec)
-                                            Parser.tokenizer.selectNext()
-                                        else:
-                                            raise Exception("Faltou tipo do argumento da funcao 2")
-                                    else:
-                                        raise Exception("Faltou identifier do argumento da funcao")        
-                            if Parser.tokenizer.next.type == "CLOSEPAR":
+                            if Parser.tokenizer.next.type == "IDENTIFIER":
+                                var_iden = Parser.tokenizer.next.value
+                                var_dec = VarDec("VARIABLE", [var_iden, var_type, None])
+                                var_dec_list = [var_dec]
                                 Parser.tokenizer.selectNext()
-                                if Parser.tokenizer.next.type == "DDOT":
-                                    Parser.tokenizer.selectNext()
-                                    block = Parser.parseBlock()
-                                    funcDec = VarDec("FUNCTION_VARIABLE", [function_iden, function_type, None])
-                                    resultado = FuncDec("FUNCTION", [funcDec])
-                                    for variable in var_dec_list:
-                                        resultado.children.append(variable)
-                                    resultado.children.append(block)
-                                    if Parser.tokenizer.next.type == "ENTER":
+                                if Parser.tokenizer.next.type == "COMA":
+                                    while Parser.tokenizer.next.type == "COMA":
                                         Parser.tokenizer.selectNext()
-                                        return resultado
-                                    raise Exception("Faltou Enter Funcao")
-                                raise Exception("Faltou dois pontos")
-                            raise Exception("Faltou fechar parenteses na funcao")
-                        raise Exception("Faltou tipo do argumento da funcao")
-                    raise Exception("Erro nos argumentos da declaracao da funcao")
-                raise Exception("Nao abriu parenteses na declaracao da funcao")
-            raise Exception("Nao nomeou a funcao na sua declaracao")
-        raise Exception("Nao usou func ao declarar funcao")
+                                        if Parser.tokenizer.next.type == "INTTYPE" or Parser.tokenizer.next.type == "STRINGTYPE":
+                                            var_type = Parser.tokenizer.next.value
+                                            Parser.tokenizer.selectNext()
+                                            if Parser.tokenizer.next.type == "IDENTIFIER":
+                                                var_iden = Parser.tokenizer.next.value
+                                                var_dec = VarDec("VARIABLE", [var_iden, var_type, None])
+                                                var_dec_list.append(var_dec)
+                                                Parser.tokenizer.selectNext()
+                                            else:
+                                                raise Exception("Faltou tipo do argumento da funcao 2")
+                                        else:
+                                            raise Exception("Faltou identifier do argumento da funcao")        
+                                if Parser.tokenizer.next.type == "CLOSEPAR":
+                                    Parser.tokenizer.selectNext()
+                                    if Parser.tokenizer.next.type == "DDOT":
+                                        Parser.tokenizer.selectNext()
+                                        block = Parser.parseBlock()
+                                        funcDec = VarDec("FUNCTION_VARIABLE", [function_iden, function_type, None])
+                                        resultado = FuncDec("FUNCTION", [funcDec])
+                                        for variable in var_dec_list:
+                                            resultado.children.append(variable)
+                                        resultado.children.append(block)
+                                        if Parser.tokenizer.next.type == "ENTER":
+                                            Parser.tokenizer.selectNext()
+                                            return resultado
+                                        raise Exception("Faltou Enter Funcao")
+                                    raise Exception("Faltou dois pontos")
+                                raise Exception("Faltou fechar parenteses na funcao")
+                            raise Exception("Faltou nome do argumento da funcao")
+                        raise Exception("Erro nos argumentos da declaracao da funcao")
+                    raise Exception("Faltou abrir parenteses da funcao")
+                raise Exception("Nao nomeou a funcao")
+            raise Exception("Nao tipou a funcao na sua declaracao")
+        raise Exception("Nao usou def ao declarar funcao")
 
     def parseProgram():
         resultado = Block(None, [])

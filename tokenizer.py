@@ -23,6 +23,7 @@ class Tokenizer:
             "not" : "NOT",
             "and" : "AND",
             "or" : "OR",
+            "void" : "VOIDTYPE",
         }
         self.tipos = {
             "+" : "PLUS",
