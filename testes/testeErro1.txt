@@ -1,0 +1,7 @@
+def int int_func():
+    string z
+    z = "1"
+    return z
+end
+
+int a = int_func()

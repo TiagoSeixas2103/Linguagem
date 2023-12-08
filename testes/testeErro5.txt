@@ -1,0 +1,6 @@
+def void void_func():
+    print("nao deve retornar valor")
+    return 5
+end
+
+void_func()

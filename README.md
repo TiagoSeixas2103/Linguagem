@@ -8,14 +8,14 @@
 ```c
 
 PROGRAM = { STATEMENT };
-DECLARATION = "def", TYPE, IDENTIFIER, "(", ( λ | TYPE, IDENTIFIER, { ",", TYPE, IDENTIFIER } ), ")", ":", BLOCK, "\n" ;
+DECLARATION = "def", ( TYPE | TYPEVOID ), IDENTIFIER, "(", ( λ | TYPE, IDENTIFIER, { ",", TYPE, IDENTIFIER } ), ")", ":", BLOCK, "\n" ;
 BLOCK = "\n", { STATEMENT }, "end" ;
 STATEMENT = ( λ | ASSIGNMENT | PRINT | IF | FOR | VARIABLE | RETURN | DECLARATION ), "\n" ;
 ASSIGNMENT = IDENTIFIER, ( "=", BOOLEXPRESSION | ARGS ) ;
 ARGS = "(", ( λ | BOOLEXPRESSION, { ",", BOOLEXPRESSION } ), ")" ;
 PRINT = "print", "(", BOOLEXPRESSION, ")" ;
 IF = "if", BOOLEXPRESSION, ":", BLOCK, ( λ | "else", ":", BLOCK ) ;
-FOR = "for", ASSIGNMENT, ";", BOOLEXPRESSION, ";", ASSIGNMENT, ":", BLOCK;
+FOR = "while", ASSIGNMENT, ";", BOOLEXPRESSION, ";", ASSIGNMENT, ":", BLOCK;
 VARIABLE = TYPE, IDENTIFIER, ( λ | "=", BOOLEXPRESSION ) ;
 RETURN = "return", BOOLEXPRESSION ;
 BOOLEXPRESSION = BOOLTERM, { ( "or" ), BOOLTERM } ;
@@ -32,4 +32,5 @@ LETTER = ( a | ... | z | A | ... | Z ) ;
 DIGIT = ( 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 0 ) ;
 CHAR = ( LETTER | DIGIT | "_" | "+" | "-" | "*" | "/" | " " | "!" | "@" | "#" | "$" | "%" | "^" | "&" | "(" | ")" | "[" | "]" | "{" | "}" | "'" | "\"" | ":" | ";" | "," | "." | "?" | "=" ) ;
 TYPE = ( "int" | "string" ) ;
+TYPEVOID = ( "void" ) ;
 ```

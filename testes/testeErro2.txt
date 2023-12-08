@@ -1,0 +1,7 @@
+def string str_func():
+    int z
+    z = "1"
+    return z
+end
+
+int a = str_func()

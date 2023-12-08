@@ -1,0 +1,47 @@
+// comentario
+
+def int int_func(int x, int y):
+    int z
+    z = x + y
+    return z
+end
+
+def string str_func():
+    string z
+    z = "teste"
+    return z
+end
+
+def void print_number():
+    int z = 15
+    print(z)
+end
+
+int a = 5
+int b = 10
+if a > b:
+    print("a is greater than b")
+end
+else:
+    print("b is greater than or equal to a")
+end
+
+int i
+while i = 0; i < 5; i = i + 1:
+    print(i)
+end
+
+print("Enter a number:")
+int input_value = input()
+print("Number accepted")
+
+int c = 15
+int d = int_func(b, b)
+string e = str_func()
+print_number()
+
+int result = c + d * 2 + input_value
+string result_text = "Result:"
+print(result_text)
+
+print(result)

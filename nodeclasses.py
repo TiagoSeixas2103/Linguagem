@@ -165,10 +165,16 @@ class FuncCall(Node):
         if "RETURN" in funcSymbolTable.dicionario:
             if type != funcSymbolTable.type["RETURN"]:
                 raise Exception("Tipos incompativeis")
+            elif type == "void":
+                raise Exception("funcao tipo void nao retorna nada")
             if self.value == "main":
                 raise Exception("main nao retorna valor")
             return_value = funcSymbolTable.get_ST("RETURN")
             return return_value
+        else:
+            if type != "void":
+                print(type)
+                raise Exception("funcao deveria retornar algo")
 
 class FuncReturn(Node):
     def Evaluate(self, SymbolTable, FuncTable):

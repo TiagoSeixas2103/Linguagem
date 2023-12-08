@@ -12,7 +12,7 @@ class Tokenizer:
             "print" : "PRINT",
             "input" : "SCAN",
             "if" : "IF",
-            "for" : "FOR",
+            "while" : "FOR",
             "else" : "ELSE",
             "var" : "VARIABLE",
             "int" : "INTTYPE",

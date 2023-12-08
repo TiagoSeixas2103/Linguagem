@@ -1,0 +1,5 @@
+def string str_func():
+    print("deve retornar valor")
+end
+
+str_func()
